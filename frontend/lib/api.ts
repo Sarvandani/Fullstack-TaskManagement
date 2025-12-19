@@ -3,6 +3,11 @@ import type { User, Project, Task, Comment, File, Analytics, ProjectMember } fro
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5002/api';
 
+// Log the API URL to help debug (will be removed later)
+if (typeof window !== 'undefined') {
+  console.log('🔍 API_URL being used:', API_URL);
+}
+
 const api = axios.create({
   baseURL: API_URL,
   headers: {

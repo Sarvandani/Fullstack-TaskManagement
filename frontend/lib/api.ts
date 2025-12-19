@@ -23,7 +23,8 @@ api.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${token}`;
   }
   // Log every API request to help debug
-  console.log('🌐 API Request:', config.method?.toUpperCase(), config.baseURL + config.url, config.data || config.params);
+  const fullUrl = (config.baseURL || '') + (config.url || '');
+  console.log('🌐 API Request:', config.method?.toUpperCase(), fullUrl, config.data || config.params);
   return config;
 });
 

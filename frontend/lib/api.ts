@@ -22,8 +22,22 @@ api.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  // Log every API request to help debug
+  console.log('🌐 API Request:', config.method?.toUpperCase(), config.baseURL + config.url, config.data || config.params);
   return config;
 });
+
+// Log API responses/errors
+api.interceptors.response.use(
+  (response) => {
+    console.log('✅ API Response:', response.config.method?.toUpperCase(), response.config.url, response.status);
+    return response;
+  },
+  (error) => {
+    console.error('❌ API Error:', error.config?.method?.toUpperCase(), error.config?.url, error.response?.status, error.message);
+    return Promise.reject(error);
+  }
+);
 
 // Auth API
 export const authAPI = {

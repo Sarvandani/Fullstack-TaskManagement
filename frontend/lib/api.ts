@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { User, Project, Task, Comment, File, Analytics } from '@/types';
+import type { User, Project, Task, Comment, File, Analytics, ProjectMember } from '@/types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5002/api';
 

@@ -95,7 +95,7 @@ export default function TaskBoard({
         <h2 className="text-xl font-semibold text-gray-900">Task Board</h2>
         <button
           onClick={() => {
-            setCreateStatus('TODO');
+            setCreateStatus(TaskStatus.TODO);
             setShowCreateModal(true);
           }}
           className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
@@ -129,7 +129,12 @@ export default function TaskBoard({
         <DragOverlay>
           {activeTask ? (
             <div className="opacity-50">
-              <TaskCard task={activeTask} />
+              <TaskCard 
+                task={activeTask}
+                onClick={() => {}}
+                onUpdate={async () => {}}
+                onDelete={async () => {}}
+              />
             </div>
           ) : null}
         </DragOverlay>

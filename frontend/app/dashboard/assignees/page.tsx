@@ -95,10 +95,10 @@ export default function AssigneesPage() {
 
         {/* Page Header */}
         <div className="flex items-center gap-3">
-          <Users className="h-8 w-8 text-purple-600" />
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">All Assignees</h1>
-            <p className="text-gray-600 mt-1">
+          <Users className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600 flex-shrink-0" />
+          <div className="min-w-0">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">All Assignees</h1>
+            <p className="text-gray-600 mt-1 text-sm sm:text-base">
               View all assignees and their assigned tasks
             </p>
           </div>
@@ -116,20 +116,20 @@ export default function AssigneesPage() {
             </p>
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-            <table className="w-full">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-x-auto">
+            <table className="w-full min-w-[640px]">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Name
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Tasks
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Projects
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
@@ -145,31 +145,31 @@ export default function AssigneesPage() {
                         )
                       }
                     >
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
-                          <div className="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center">
-                            <span className="text-purple-600 font-semibold">
+                          <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
+                            <span className="text-purple-600 font-semibold text-xs sm:text-sm">
                               {assignee.name.charAt(0).toUpperCase()}
                             </span>
                           </div>
-                          <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">
+                          <div className="ml-3 sm:ml-4 min-w-0">
+                            <div className="text-sm font-medium text-gray-900 truncate">
                               {assignee.name}
                             </div>
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                         <span className="text-sm text-gray-900 font-medium">
                           {assignee.taskCount}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                         <span className="text-sm text-gray-900 font-medium">
                           {assignee.projectCount}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {expandedAssignee === assignee.name ? (
                           <ChevronUp className="h-5 w-5 inline-block text-gray-500" />
                         ) : (
@@ -179,7 +179,7 @@ export default function AssigneesPage() {
                     </tr>
                     {expandedAssignee === assignee.name && (
                       <tr>
-                        <td colSpan={4} className="px-6 py-4 bg-gray-50">
+                        <td colSpan={4} className="px-4 sm:px-6 py-4 bg-gray-50">
                           <div className="space-y-2">
                             <h4 className="text-sm font-semibold text-gray-700 mb-3">
                               Assigned Tasks ({assignee.tasks.length})

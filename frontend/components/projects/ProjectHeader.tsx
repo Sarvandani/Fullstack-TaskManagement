@@ -27,7 +27,7 @@ export default function ProjectHeader({ project, onUpdate, onDelete }: ProjectHe
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
       {isEditing ? (
         <div className="space-y-4">
           <input
@@ -64,17 +64,17 @@ export default function ProjectHeader({ project, onUpdate, onDelete }: ProjectHe
           </div>
         </div>
       ) : (
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+          <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 mb-2">
               <div
-                className="w-4 h-4 rounded-full"
+                className="w-4 h-4 rounded-full flex-shrink-0"
                 style={{ backgroundColor: project.color }}
               />
-              <h1 className="text-3xl font-bold text-gray-900">{project.name}</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">{project.name}</h1>
             </div>
             {project.description && (
-              <p className="text-gray-600 mb-4">{project.description}</p>
+              <p className="text-gray-600 mb-4 break-words">{project.description}</p>
             )}
             <div className="flex items-center gap-4 text-sm text-gray-500">
               <div className="flex items-center gap-1">
@@ -83,7 +83,7 @@ export default function ProjectHeader({ project, onUpdate, onDelete }: ProjectHe
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-shrink-0">
             {onDelete && (
               <button
                 onClick={() => onDelete(project.id)}

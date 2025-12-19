@@ -43,8 +43,8 @@ export default function ConfirmModal({
   const styles = variantStyles[variant];
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-md shadow-xl">
         <div className="flex items-start gap-4 mb-4">
           <div className={`flex-shrink-0 ${styles.icon}`}>
             <AlertTriangle className="h-6 w-6" />
@@ -60,7 +60,7 @@ export default function ConfirmModal({
             <X className="h-5 w-5" />
           </button>
         </div>
-        <div className="flex gap-3 justify-end">
+        <div className="flex flex-col sm:flex-row gap-3 justify-end">
           <button
             onClick={onCancel}
             className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"

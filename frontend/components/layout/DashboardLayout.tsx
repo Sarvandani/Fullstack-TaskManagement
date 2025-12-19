@@ -20,7 +20,7 @@ export default function DashboardLayout({
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Mobile Top Bar - Horizontal Layout */}
-      <header className="md:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50 shadow-sm">
+      <header className="lg:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50 shadow-sm">
         <div className="flex items-center justify-between px-2 sm:px-3 py-2.5 gap-2">
           <h1 className="text-base sm:text-lg font-bold text-gray-900 flex-shrink-0 truncate max-w-[120px]">
             TaskManager
@@ -50,7 +50,7 @@ export default function DashboardLayout({
       </header>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden md:fixed md:left-0 md:top-0 md:h-full md:w-64 md:flex md:flex-col bg-white border-r border-gray-200">
+      <aside className="hidden lg:fixed lg:left-0 lg:top-0 lg:h-full lg:w-64 lg:flex lg:flex-col bg-white border-r border-gray-200">
         <div className="p-6 flex-1">
           <h1 className="text-2xl font-bold text-gray-900 mb-8">TaskManager</h1>
           <nav className="space-y-2">
@@ -86,7 +86,7 @@ export default function DashboardLayout({
       </aside>
 
       {/* Main Content */}
-      <main className="pt-14 sm:pt-16 md:pt-0 md:ml-64 p-4 md:p-8">
+      <main className="pt-14 sm:pt-16 lg:pt-0 lg:ml-64 p-4 lg:p-8">
         {children}
       </main>
     </div>

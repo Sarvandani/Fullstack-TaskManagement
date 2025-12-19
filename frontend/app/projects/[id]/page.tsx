@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSocket } from '@/contexts/SocketContext';
 import { projectsAPI, tasksAPI, filesAPI, analyticsAPI } from '@/lib/api';
+import { mockProjects, mockTasks } from '@/lib/mockData';
 import type { Project, Task, File } from '@/types';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import TaskBoard from '@/components/tasks/TaskBoard';
@@ -14,7 +15,7 @@ import ConfirmModal from '@/components/common/ConfirmModal';
 import { ArrowLeft } from 'lucide-react';
 
 export default function ProjectPage() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, isDemoMode } = useAuth();
   const { socket } = useSocket();
   const router = useRouter();
   const params = useParams();
@@ -40,6 +41,7 @@ export default function ProjectPage() {
   }, [user, projectId]);
 
   useEffect(() => {
+    if (isDemoMode) return; // Skip socket connection in demo mode
     if (!socket || !projectId) return;
 
     socket.emit('join-project', projectId);
@@ -82,7 +84,7 @@ export default function ProjectPage() {
 
     socket.on('comment-added', (comment: any) => {
       setTasks((prev) =>
-        prev.map((t) => {
+        prev.map((t): Task => {
           if (t.id === comment.taskId) {
             // Check if comment already exists to prevent duplicates
             const commentExists = t.comments?.some((c) => c.id === comment.id);
@@ -92,10 +94,10 @@ export default function ProjectPage() {
               ...t,
               comments: [...(t.comments || []), comment],
               _count: {
-                ...t._count,
                 comments: (t._count?.comments || 0) + 1,
+                files: t._count?.files || 0,
               },
-            };
+            } as Task;
           }
           return t;
         })
@@ -134,27 +136,58 @@ export default function ProjectPage() {
       socket.off('file-deleted');
       socket.off('project-updated');
     };
-  }, [socket, projectId]);
+  }, [socket, projectId, isDemoMode]);
 
   const fetchProjectData = async () => {
     try {
-      const [projectData, tasksData, filesData] = await Promise.all([
-        projectsAPI.getById(projectId),
-        tasksAPI.getAll({ projectId }),
-        filesAPI.getAll({ projectId }),
-      ]);
-      setProject(projectData);
-      setTasks(tasksData);
-      setFiles(filesData);
+      if (isDemoMode) {
+        // Use mock data in demo mode
+        const mockProject = mockProjects.find(p => p.id === projectId);
+        if (!mockProject) {
+          router.push('/dashboard');
+          return;
+        }
+        const mockProjectTasks = mockTasks.filter(t => t.projectId === projectId);
+        setProject(mockProject);
+        setTasks(mockProjectTasks);
+        setFiles([]); // No files in demo
+      } else {
+        const [projectData, tasksData, filesData] = await Promise.all([
+          projectsAPI.getById(projectId),
+          tasksAPI.getAll({ projectId }),
+          filesAPI.getAll({ projectId }),
+        ]);
+        setProject(projectData);
+        setTasks(tasksData);
+        setFiles(filesData);
+      }
     } catch (error) {
       console.error('Failed to fetch project data:', error);
-      router.push('/dashboard');
+      // Fallback to mock data on error in demo mode
+      if (isDemoMode) {
+        const mockProject = mockProjects.find(p => p.id === projectId);
+        if (mockProject) {
+          const mockProjectTasks = mockTasks.filter(t => t.projectId === projectId);
+          setProject(mockProject);
+          setTasks(mockProjectTasks);
+          setFiles([]);
+        } else {
+          router.push('/dashboard');
+        }
+      } else {
+        router.push('/dashboard');
+      }
     } finally {
       setLoading(false);
     }
   };
 
   const handleTaskCreate = async (taskData: Partial<Task>) => {
+    if (isDemoMode) {
+      alert('This is a demo. Creating tasks requires a database connection.');
+      return;
+    }
+
     try {
       const newTask = await tasksAPI.create({
         ...taskData,
@@ -172,6 +205,14 @@ export default function ProjectPage() {
   };
 
   const handleTaskUpdate = async (taskId: string, updates: Partial<Task>) => {
+    if (isDemoMode) {
+      // In demo mode, just update local state
+      setTasks((prev) =>
+        prev.map((t) => (t.id === taskId ? { ...t, ...updates } : t))
+      );
+      return { ...mockTasks.find(t => t.id === taskId)!, ...updates };
+    }
+
     try {
       console.log('handleTaskUpdate called with:', { taskId, updates });
       console.log('handleTaskUpdate: updates.assigneeNames:', updates.assigneeNames);
@@ -189,6 +230,11 @@ export default function ProjectPage() {
   };
 
   const handleTaskDelete = async (taskId: string) => {
+    if (isDemoMode) {
+      alert('This is a demo. Deleting tasks requires a database connection.');
+      return;
+    }
+
     try {
       await tasksAPI.delete(taskId);
       setTasks((prev) => prev.filter((t) => t.id !== taskId));
@@ -198,6 +244,21 @@ export default function ProjectPage() {
   };
 
   const handleTaskReorder = async (reorderedTasks: Array<{ id: string; position: number }>) => {
+    if (isDemoMode) {
+      // In demo mode, just update local state
+      setTasks((prev) => {
+        const taskMap = new Map(prev.map((t) => [t.id, t]));
+        reorderedTasks.forEach(({ id, position }) => {
+          const task = taskMap.get(id);
+          if (task) {
+            task.position = position;
+          }
+        });
+        return Array.from(taskMap.values()).sort((a, b) => a.position - b.position);
+      });
+      return;
+    }
+
     try {
       await tasksAPI.reorder(projectId, reorderedTasks);
     } catch (error) {
@@ -207,6 +268,11 @@ export default function ProjectPage() {
   };
 
   const handleFileUpload = async (file: File) => {
+    if (isDemoMode) {
+      alert('This is a demo. Uploading files requires a database connection.');
+      return;
+    }
+
     try {
       const uploadedFile = await filesAPI.upload(file, projectId);
       setFiles((prev) => {
@@ -221,6 +287,11 @@ export default function ProjectPage() {
   };
 
   const handleFileDelete = async (fileId: string) => {
+    if (isDemoMode) {
+      alert('This is a demo. Deleting files requires a database connection.');
+      return;
+    }
+
     try {
       await filesAPI.delete(fileId);
       setFiles((prev) => prev.filter((f) => f.id !== fileId));
@@ -235,6 +306,12 @@ export default function ProjectPage() {
 
   const handleDeleteConfirm = async () => {
     if (!project) return;
+
+    if (isDemoMode) {
+      alert('This is a demo. Deleting projects requires a database connection.');
+      setShowDeleteModal(false);
+      return;
+    }
 
     try {
       await projectsAPI.delete(project.id);

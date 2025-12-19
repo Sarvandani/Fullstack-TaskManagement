@@ -73,8 +73,7 @@ export default function LoginPage() {
       await demo();
       router.push('/dashboard');
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to load demo');
-    } finally {
+      setError('Failed to load demo');
       setDemoLoading(false);
     }
   };
@@ -90,7 +89,7 @@ export default function LoginPage() {
             {isLogin ? 'Sign in to your account' : 'Create a new account'}
           </p>
           <p className="text-xs text-gray-500 mt-2">
-            Note: Requires PostgreSQL database installation
+            Try demo mode to explore without a database
           </p>
         </div>
 

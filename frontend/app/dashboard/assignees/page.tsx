@@ -4,8 +4,9 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { analyticsAPI } from '@/lib/api';
+import { getMockAssignees } from '@/lib/mockData';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { ArrowLeft, Users } from 'lucide-react';
+import { ArrowLeft, Users, ChevronDown, ChevronUp } from 'lucide-react';
 import type { TaskStatus } from '@/types';
 
 interface Assignee {
@@ -25,14 +26,14 @@ interface Assignee {
 }
 
 const statusColors: Record<TaskStatus, string> = {
-  TODO: 'bg-gray-100 text-gray-700 border-gray-300',
-  IN_PROGRESS: 'bg-blue-100 text-blue-700 border-blue-300',
-  IN_REVIEW: 'bg-yellow-100 text-yellow-700 border-yellow-300',
-  DONE: 'bg-green-100 text-green-700 border-green-300',
+  TODO: 'bg-gray-100 text-gray-700',
+  IN_PROGRESS: 'bg-blue-100 text-blue-700',
+  IN_REVIEW: 'bg-yellow-100 text-yellow-700',
+  DONE: 'bg-green-100 text-green-700',
 };
 
 export default function AssigneesPage() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, isDemoMode } = useAuth();
   const router = useRouter();
   const [assignees, setAssignees] = useState<Assignee[]>([]);
   const [loading, setLoading] = useState(true);
@@ -52,10 +53,19 @@ export default function AssigneesPage() {
 
   const fetchAssignees = async () => {
     try {
-      const assigneesData = await analyticsAPI.getAssignees();
-      setAssignees(assigneesData);
+      if (isDemoMode) {
+        // Use mock data in demo mode
+        setAssignees(getMockAssignees());
+      } else {
+        const assigneesData = await analyticsAPI.getAssignees();
+        setAssignees(assigneesData);
+      }
     } catch (error) {
       console.error('Failed to fetch assignees:', error);
+      // Fallback to mock data on error in demo mode
+      if (isDemoMode) {
+        setAssignees(getMockAssignees());
+      }
     } finally {
       setLoading(false);
     }
@@ -160,7 +170,11 @@ export default function AssigneesPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {expandedAssignee === assignee.name ? 'Hide tasks' : 'Show tasks'}
+                        {expandedAssignee === assignee.name ? (
+                          <ChevronUp className="h-5 w-5 inline-block text-gray-500" />
+                        ) : (
+                          <ChevronDown className="h-5 w-5 inline-block text-gray-500" />
+                        )}
                       </td>
                     </tr>
                     {expandedAssignee === assignee.name && (

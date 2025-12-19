@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { projectsAPI } from '@/lib/api';
+import { mockProjects } from '@/lib/mockData';
 import type { Project } from '@/types';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import ProjectCard from '@/components/projects/ProjectCard';
@@ -11,7 +12,7 @@ import ConfirmModal from '@/components/common/ConfirmModal';
 import { ArrowLeft, FolderKanban, Plus } from 'lucide-react';
 
 export default function AllProjectsPage() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, isDemoMode } = useAuth();
   const router = useRouter();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,10 +39,19 @@ export default function AllProjectsPage() {
 
   const fetchProjects = async () => {
     try {
-      const projectsData = await projectsAPI.getAll();
-      setProjects(projectsData);
+      if (isDemoMode) {
+        // Use mock data in demo mode
+        setProjects(mockProjects);
+      } else {
+        const projectsData = await projectsAPI.getAll();
+        setProjects(projectsData);
+      }
     } catch (error) {
       console.error('Failed to fetch projects:', error);
+      // Fallback to mock data on error in demo mode
+      if (isDemoMode) {
+        setProjects(mockProjects);
+      }
     } finally {
       setLoading(false);
     }
@@ -50,6 +60,14 @@ export default function AllProjectsPage() {
   const handleCreateProject = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newProjectName.trim()) return;
+
+    if (isDemoMode) {
+      alert('This is a demo. Creating projects requires a database connection.');
+      setShowCreateModal(false);
+      setNewProjectName('');
+      setNewProjectDesc('');
+      return;
+    }
 
     try {
       const project = await projectsAPI.create({
@@ -78,6 +96,12 @@ export default function AllProjectsPage() {
 
   const handleDeleteConfirm = async () => {
     if (!deleteModal.projectId) return;
+
+    if (isDemoMode) {
+      alert('This is a demo. Deleting projects requires a database connection.');
+      setDeleteModal({ isOpen: false, projectId: null, projectName: '' });
+      return;
+    }
 
     try {
       await projectsAPI.delete(deleteModal.projectId);

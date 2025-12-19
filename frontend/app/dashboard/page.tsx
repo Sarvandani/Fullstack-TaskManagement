@@ -4,13 +4,14 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { analyticsAPI, projectsAPI } from '@/lib/api';
+import { mockAnalytics } from '@/lib/mockData';
 import type { Analytics, Project } from '@/types';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import AnalyticsDashboard from '@/components/analytics/AnalyticsDashboard';
 import { Plus } from 'lucide-react';
 
 export default function DashboardPage() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, isDemoMode } = useAuth();
   const router = useRouter();
   const [analytics, setAnalytics] = useState<Analytics | null>(null);
   const [loading, setLoading] = useState(true);
@@ -32,10 +33,19 @@ export default function DashboardPage() {
 
   const fetchData = async () => {
     try {
-      const analyticsData = await analyticsAPI.getAnalytics();
-      setAnalytics(analyticsData);
+      if (isDemoMode) {
+        // Use mock data in demo mode
+        setAnalytics(mockAnalytics);
+      } else {
+        const analyticsData = await analyticsAPI.getAnalytics();
+        setAnalytics(analyticsData);
+      }
     } catch (error) {
       console.error('Failed to fetch data:', error);
+      // Fallback to mock data on error in demo mode
+      if (isDemoMode) {
+        setAnalytics(mockAnalytics);
+      }
     } finally {
       setLoading(false);
     }
@@ -44,6 +54,15 @@ export default function DashboardPage() {
   const handleCreateProject = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newProjectName.trim()) return;
+
+    if (isDemoMode) {
+      // In demo mode, just show a message
+      alert('This is a demo. Creating projects requires a database connection.');
+      setShowCreateModal(false);
+      setNewProjectName('');
+      setNewProjectDesc('');
+      return;
+    }
 
     try {
       await projectsAPI.create({

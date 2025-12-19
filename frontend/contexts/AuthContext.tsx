@@ -3,10 +3,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { authAPI } from '@/lib/api';
 import type { User } from '@/types';
+import { mockUser } from '@/lib/mockData';
 
 interface AuthContextType {
   user: User | null;
   token: string | null;
+  isDemoMode: boolean;
   login: (email: string, password: string, rememberMe?: boolean) => Promise<void>;
   register: (email: string, password: string, name: string) => Promise<void>;
   demo: () => Promise<void>;
@@ -19,9 +21,22 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [isDemoMode, setIsDemoMode] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Check if in demo mode
+    const demoMode = localStorage.getItem('demoMode') === 'true';
+    setIsDemoMode(demoMode);
+
+    if (demoMode) {
+      // In demo mode, set mock user immediately
+      setUser(mockUser);
+      setToken('demo-token');
+      setLoading(false);
+      return;
+    }
+
     // Check for token in localStorage or sessionStorage
     const storedToken = localStorage.getItem('token') || sessionStorage.getItem('token');
     const tokenExpiry = localStorage.getItem('tokenExpiry');
@@ -79,6 +94,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     
     setToken(token);
     setUser(user);
+    setIsDemoMode(false);
+    localStorage.removeItem('demoMode');
   };
 
   const register = async (email: string, password: string, name: string) => {
@@ -86,26 +103,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('token', token);
     setToken(token);
     setUser(user);
+    setIsDemoMode(false);
+    localStorage.removeItem('demoMode');
   };
 
   const demo = async () => {
-    const { user, token } = await authAPI.demo();
-    sessionStorage.setItem('token', token);
-    setToken(token);
-    setUser(user);
+    // Use mock data for demo mode
+    localStorage.setItem('demoMode', 'true');
+    setUser(mockUser);
+    setToken('demo-token');
+    setIsDemoMode(true);
   };
 
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('tokenExpiry');
-    // Don't clear remembered credentials on logout - user might want to stay logged in
+    localStorage.removeItem('demoMode');
     sessionStorage.removeItem('token');
     setToken(null);
     setUser(null);
+    setIsDemoMode(false);
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, register, demo, logout, loading }}>
+    <AuthContext.Provider value={{ user, token, isDemoMode, login, register, demo, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

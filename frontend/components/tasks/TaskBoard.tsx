@@ -11,7 +11,8 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import type { Project, Task, TaskStatus } from '@/types';
+import type { Project, Task } from '@/types';
+import { TaskStatus } from '@/types';
 import TaskColumn from './TaskColumn';
 import TaskCard from './TaskCard';
 import CreateTaskModal from './CreateTaskModal';
@@ -26,7 +27,7 @@ interface TaskBoardProps {
   onReorderTasks: (tasks: Array<{ id: string; position: number }>) => Promise<void>;
 }
 
-const statuses: TaskStatus[] = ['TODO', 'IN_PROGRESS', 'IN_REVIEW', 'DONE'];
+const statuses: TaskStatus[] = [TaskStatus.TODO, TaskStatus.IN_PROGRESS, TaskStatus.IN_REVIEW, TaskStatus.DONE];
 
 export default function TaskBoard({
   tasks,
@@ -38,7 +39,7 @@ export default function TaskBoard({
 }: TaskBoardProps) {
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [createStatus, setCreateStatus] = useState<TaskStatus>('TODO');
+  const [createStatus, setCreateStatus] = useState<TaskStatus>(TaskStatus.TODO);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {

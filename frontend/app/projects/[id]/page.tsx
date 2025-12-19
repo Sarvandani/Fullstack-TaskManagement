@@ -204,13 +204,13 @@ export default function ProjectPage() {
     }
   };
 
-  const handleTaskUpdate = async (taskId: string, updates: Partial<Task>) => {
+  const handleTaskUpdate = async (taskId: string, updates: Partial<Task>): Promise<void> => {
     if (isDemoMode) {
       // In demo mode, just update local state
       setTasks((prev) =>
         prev.map((t) => (t.id === taskId ? { ...t, ...updates } : t))
       );
-      return { ...mockTasks.find(t => t.id === taskId)!, ...updates };
+      return;
     }
 
     try {
@@ -222,7 +222,6 @@ export default function ProjectPage() {
       setTasks((prev) =>
         prev.map((t) => (t.id === taskId ? updatedTask : t))
       );
-      return updatedTask;
     } catch (error) {
       console.error('Failed to update task:', error);
       throw error;
@@ -267,7 +266,7 @@ export default function ProjectPage() {
     }
   };
 
-  const handleFileUpload = async (file: File) => {
+  const handleFileUpload = async (file: globalThis.File) => {
     if (isDemoMode) {
       alert('This is a demo. Uploading files requires a database connection.');
       return;

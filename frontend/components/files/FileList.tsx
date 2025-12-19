@@ -8,7 +8,7 @@ import { format } from 'date-fns';
 interface FileListProps {
   files: File[];
   projectId: string;
-  onUpload: (file: File) => Promise<void>;
+  onUpload: (file: globalThis.File) => Promise<void>;
   onDelete: (fileId: string) => Promise<void>;
 }
 

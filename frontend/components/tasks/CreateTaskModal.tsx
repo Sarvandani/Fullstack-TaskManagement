@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import type { Project, Task, TaskStatus, Priority } from '@/types';
+import type { Project, Task, TaskStatus } from '@/types';
+import { Priority } from '@/types';
 import { X } from 'lucide-react';
 import MultiNameInput from './MultiNameInput';
 
@@ -21,7 +22,7 @@ export default function CreateTaskModal({
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState<TaskStatus>(defaultStatus);
-  const [priority, setPriority] = useState<Priority>('MEDIUM');
+  const [priority, setPriority] = useState<Priority>(Priority.MEDIUM);
   const [dueDate, setDueDate] = useState('');
   const [assigneeNames, setAssigneeNames] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);

@@ -16,24 +16,25 @@ export default function HideDevIndicator() {
 
       // Move any fixed bottom-left elements to middle-bottom
       document.querySelectorAll('*').forEach(el => {
-        const style = window.getComputedStyle(el);
-        const rect = el.getBoundingClientRect();
+        const htmlEl = el as HTMLElement;
+        const style = window.getComputedStyle(htmlEl);
+        const rect = htmlEl.getBoundingClientRect();
         
         // Check if element is at bottom-left corner
         if (
           (style.position === 'fixed' || style.position === 'absolute') &&
           rect.bottom < 100 && // Near bottom
           rect.left < 100 && // Near left
-          (el.tagName === 'IFRAME' || 
-           el.querySelector('iframe') || 
-           el.textContent?.trim().toLowerCase() === 'n' ||
-           el.getAttribute('title')?.toLowerCase().includes('next'))
+          (htmlEl.tagName === 'IFRAME' || 
+           htmlEl.querySelector('iframe') || 
+           htmlEl.textContent?.trim().toLowerCase() === 'n' ||
+           htmlEl.getAttribute('title')?.toLowerCase().includes('next'))
         ) {
-          el.style.position = 'fixed';
-          el.style.bottom = '0';
-          el.style.left = '50%';
-          el.style.transform = 'translateX(-50%)';
-          el.style.right = 'auto';
+          htmlEl.style.position = 'fixed';
+          htmlEl.style.bottom = '0';
+          htmlEl.style.left = '50%';
+          htmlEl.style.transform = 'translateX(-50%)';
+          htmlEl.style.right = 'auto';
         }
       });
     };

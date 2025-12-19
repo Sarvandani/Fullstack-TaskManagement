@@ -108,7 +108,7 @@ export const tasksAPI = {
 
 // Files API
 export const filesAPI = {
-  upload: async (file: File, projectId?: string, taskId?: string): Promise<File> => {
+  upload: async (file: globalThis.File, projectId?: string, taskId?: string): Promise<File> => {
     const formData = new FormData();
     formData.append('file', file);
     if (projectId) formData.append('projectId', projectId);

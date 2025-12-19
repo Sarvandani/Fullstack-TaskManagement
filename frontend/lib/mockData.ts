@@ -1,4 +1,4 @@
-import type { Project, Task, Analytics, User } from '@/types';
+import type { Project, Task, Analytics, User, TaskStatus } from '@/types';
 
 export const mockUser: User = {
   id: 'demo-user-1',
@@ -308,7 +308,7 @@ export interface AssigneeOverview {
   tasks: Array<{
     id: string;
     title: string;
-    status: string;
+    status: TaskStatus;
     project: {
       id: string;
       name: string;

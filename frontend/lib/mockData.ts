@@ -1,10 +1,11 @@
 import type { Project, Task, Analytics, User, TaskStatus } from '@/types';
+import { UserRole } from '@/types';
 
 export const mockUser: User = {
   id: 'demo-user-1',
   email: 'demo@example.com',
   name: 'Demo User',
-  role: 'MEMBER',
+  role: UserRole.MEMBER,
 };
 
 export const mockProjects: Project[] = [

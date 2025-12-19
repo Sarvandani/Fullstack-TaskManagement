@@ -46,16 +46,6 @@ export default function DashboardLayout({
             </button>
           </div>
         </div>
-        {/* Mobile Navigation */}
-        <nav className="flex border-t border-gray-200">
-          <a
-            href="/dashboard"
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-blue-700 bg-blue-50 border-b-2 border-blue-700"
-          >
-            <LayoutDashboard className="h-5 w-5" />
-            <span>Dashboard</span>
-          </a>
-        </nav>
       </header>
 
       {/* Desktop Sidebar - Only visible on desktop */}

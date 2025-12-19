@@ -33,3 +33,27 @@ iframe {
   transform: translateX(-50%) !important;
   right: auto !important;
 }
+
+/* Force hide desktop sidebar on mobile screens */
+@media (max-width: 1023px) {
+  .desktop-sidebar {
+    display: none !important;
+  }
+  
+  /* Force show mobile header on mobile screens */
+  .mobile-header {
+    display: block !important;
+  }
+}
+
+/* Show desktop sidebar on large screens */
+@media (min-width: 1024px) {
+  .desktop-sidebar {
+    display: flex !important;
+  }
+  
+  /* Hide mobile header on large screens */
+  .mobile-header {
+    display: none !important;
+  }
+}

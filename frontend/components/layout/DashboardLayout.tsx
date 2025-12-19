@@ -20,7 +20,7 @@ export default function DashboardLayout({
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Mobile Top Bar - Horizontal Layout - Shows on screens < 1024px */}
-      <header className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50 shadow-sm lg:hidden">
+      <header className="mobile-header fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50 shadow-sm lg:hidden">
         <div className="flex items-center justify-between px-2 sm:px-3 py-2.5 gap-2">
           <h1 className="text-base sm:text-lg font-bold text-gray-900 flex-shrink-0 truncate max-w-[120px]">
             TaskManager
@@ -50,7 +50,7 @@ export default function DashboardLayout({
       </header>
 
       {/* Desktop Sidebar - Hidden on screens < 1024px, shows on >= 1024px */}
-      <aside className="hidden lg:block lg:fixed lg:left-0 lg:top-0 lg:h-full lg:w-64 lg:flex lg:flex-col bg-white border-r border-gray-200 z-40">
+      <aside className="desktop-sidebar hidden lg:block lg:fixed lg:left-0 lg:top-0 lg:h-full lg:w-64 lg:flex lg:flex-col bg-white border-r border-gray-200 z-40">
         <div className="p-6 flex-1">
           <h1 className="text-2xl font-bold text-gray-900 mb-8">TaskManager</h1>
           <nav className="space-y-2">
